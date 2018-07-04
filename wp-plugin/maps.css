@@ -6,20 +6,91 @@ html, body, #react-target, #react-target > div{
   width: 100%;
   height: 100%;
 }
+.map-container{
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  position: absolute;
+}
+#react-target{
+  width: 500px;
+  height: 500px;
+}
+.close-map{
+  padding: 10px;
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  right: 10px;
+  top: 0;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+.default-map-container{
+  padding: 20px;
+}
+.default-map-container > h1{
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+.default-map-container > h3{
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+.map-modal-content{
+  height: 100%;
+  width: 100%;
+  border-top: 1px solid #afafaf;
+}
+.map-component-modal{
+  box-sizing: border-box;
+  position: absolute;
+  width: 90%;
+  height: 90%;
+  left: 5%;
+  top: 20px;
+  z-index: 2;
+  background-color: white;
+  padding: 20px;
+  padding-top: 40px;
+  border-radius: 5px;
+  box-shadow: 0 0 20px #232323;
+}
+.map-mask{
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  position: absolute;
+  background-color: rgba(0, 0, 0, .6)
+}
 .places-menu{
   display: inline-block;
-  width: 200px;
+  width: 150px;
   vertical-align: top;
+  z-index: 2;
+  background-color: rgba(255, 255, 255, .7);
 }
 #map{
   display: inline-block;
+  width: calc(100% - 150px);
+  min-height: 400px;
+  z-index: 1;
+  box-shadow: 0px 0px 1px #565656;
   height: 100%;
-  width: calc(100% - 200px);
 }
 .place-type-option{
   font-size: 16px;
   padding: 10px;
-  border-bottom: 1px solid #787878;
+  position: relative;
+}
+.place-type-option:after{
+  content: '';
+  position: absolute;
+  border-bottom: 1px solid #afafaf;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
 }
 .place-type-option:hover{
   background-color: #454545;

@@ -6,15 +6,17 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "transpile": ".\\node_modules\\.bin\\babel src --out-dir lib",
-    "bundle": ".\\node_modules\\.bin\\webpack-cli lib",
-    "build": "npm run transpile && npm run bundle"
+    "bundle": ".\\node_modules\\.bin\\webpack-cli lib -o wp-plugin/main.js",
+    "zip": "rm gp-local-search.zip && powershell.exe -nologo -noprofile -command \"& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::CreateFromDirectory('wp-plugin', 'gp-local-search.zip'); }\"",
+    "build": "npm run transpile && npm run bundle && npm run zip"
   },
   "author": "John Rodney",
   "license": "MIT",
   "dependencies": {
     "npm": "^6.1.0",
     "react": "^16.4.1",
-    "react-dom": "^16.4.1"
+    "react-dom": "^16.4.1",
+    "velocity-react": "^1.4.1"
   },
   "devDependencies": {
     "archiver-cli": "^0.1.0",

@@ -1,58 +1,69 @@
 import React from 'react';
 import defaultMapStyles from '../config/map-styles';
+import categoryToIconMap from '../config/icon-category-map';
+
+const apartmentComplexMarker = 'home';
 
 export default class MapComponent extends React.Component {
-  constructor(){
+  constructor() {
     super();
     const { config } = window;
-    this.markers = [];
 
+    this.markers = [];
     this.state = {
       placeTypes: config.defaultTypes,
       loading: false,
+      activeType: config.defaultTypes[0],
     }
   }
 
   initMapFromConfig(address) {
     const geocoder = new google.maps.Geocoder();
+
     geocoder.geocode({ address }, (res, status) => {
       this.makeMapFromLocation(res[0].geometry.location);
     });
   }
 
-  makeMapFromLocation(location){
+  makeMapFromLocation(location) {
     const { config } = window;
     const title = config.defaultName;
+
     this.location = location;
-    /* Create a map object and specify the DOM element
-       for display. */
     this.map = new google.maps.Map(document.getElementById('map'), {
       center: location,
+      disableDefaultUI: true,
       zoom: 13
     });
 
-    // Create a marker and set its position.
-    this.addMarker(location, title);
-
+    this.addMarker(location, title, apartmentComplexMarker);
     this.setStyles();
   }
 
   addDefaultLocationMarker() {
     const { defaultName } = window.config;
-    this.addMarker(this.location, defaultName);
+
+    this.addMarker(this.location, defaultName, apartmentComplexMarker);
   }
 
-  addMarker(location, title) {
+  addMarker(location, title, iconType) {
     const { Size, Point } = google.maps;
+
     this.markers.push(new google.maps.Marker({
       map: this.map,
       position: location,
-      title
+      title,
+      label: {
+        fontFamily: 'Material Icons',
+        color: 'white',
+        text: iconType,
+      }
     }));
   }
 
   findLocalPlaces(query) {
     this.setState({ loading: true })
+
     const service = new google.maps.places.PlacesService(this.map);
     const { location } = this;
     const request = {
@@ -65,23 +76,30 @@ export default class MapComponent extends React.Component {
   }
 
   addMarkersFromNearbySearchResult(res) {
-    res.forEach(result => this.addMarker(result.geometry.location, result.name));
+    const icon = categoryToIconMap[this.state.activeType];
+
+    res.forEach(result => this.addMarker(result.geometry.location, result.name, icon));
     this.setState({ loading: false })
   }
 
   setStyles() {
     const styles = defaultMapStyles;
+
     this.map.setOptions({ styles })
     this.findLocalPlaces(this.state.placeTypes[0]);
   }
 
   componentDidMount() {
     const { config } = window;
+
     this.initMapFromConfig(config.defaultAddress);
   }
 
   changePlace(place) {
+    const activeType = place.toLowerCase();
+
     this.clearMarkers();
+    this.setState({ activeType })
     this.findLocalPlaces(place);
   }
 
@@ -93,24 +111,34 @@ export default class MapComponent extends React.Component {
 
   render() {
     const loader = this.state.loading ? <div className="loader">Loading...</div> : '';
+    const { close } = this.props;
+
     return (
-      <div>
-        { loader }
-        <div className="places-menu">
-          {
-            this.state.placeTypes.map(place => {
-              return (
-                <div
-                  className="place-type-option"
-                  onClick={() => this.changePlace(place)}
-                >
-                  { place.substring(0, 1).toUpperCase() + place.substring(1, place.length) }
-                </div>
-              )
-            })
-          }
+      <div className="map-component-modal">
+        <div
+          className="close-map"
+          onClick={() => this.props.close()}
+        >
+        <i class="material-icons">close</i>
         </div>
-        <div className="map" id="map"></div>
+        { loader }
+        <div className="map-modal-content">
+          <div className="places-menu">
+            {
+              this.state.placeTypes.map(place => {
+                return (
+                  <div
+                    className="place-type-option"
+                    onClick={() => this.changePlace(place)}
+                  >
+                    { place.substring(0, 1).toUpperCase() + place.substring(1, place.length) }
+                  </div>
+                )
+              })
+            }
+          </div>
+          <div className="map" id="map"></div>
+        </div>
       </div>
     );
   }
