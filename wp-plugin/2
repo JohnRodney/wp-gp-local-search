@@ -1,0 +1,4 @@
+  font-size: 13px;
+  white-space: nowrap;
+  box-sizing: border-box;
+  overflow: hidden;

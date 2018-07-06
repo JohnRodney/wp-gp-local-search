@@ -3,12 +3,20 @@
   "version": "1.0.0",
   "description": "A javascript plugin for interacting with google places api intended for embedding into a wordpress plugin",
   "main": "index.js",
+  "watch": {
+    "build": {
+      "patterns": "src/*",
+      "extensions": "js",
+      "ignore": "node_modules"
+    }
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "transpile": ".\\node_modules\\.bin\\babel src --out-dir lib",
     "bundle": ".\\node_modules\\.bin\\webpack-cli lib -o wp-plugin/main.js",
     "zip": "rm gp-local-search.zip && powershell.exe -nologo -noprofile -command \"& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::CreateFromDirectory('wp-plugin', 'gp-local-search.zip'); }\"",
-    "build": "npm run transpile && npm run bundle && npm run zip"
+    "build": "npm run transpile && npm run bundle && npm run zip",
+    "watch": "npm-watch"
   },
   "author": "John Rodney",
   "license": "MIT",
@@ -21,6 +29,7 @@
   "devDependencies": {
     "archiver-cli": "^0.1.0",
     "babel-cli": "^6.26.0",
+    "babel-eslint": "^8.2.5",
     "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1"
   }

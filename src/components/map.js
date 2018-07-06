@@ -1,6 +1,7 @@
 import React from 'react';
 import defaultMapStyles from '../config/map-styles';
 import categoryToIconMap from '../config/icon-category-map';
+import CategoryList from './category-list';
 
 const apartmentComplexMarker = 'home';
 
@@ -14,6 +15,7 @@ export default class MapComponent extends React.Component {
       placeTypes: config.defaultTypes,
       loading: false,
       activeType: config.defaultTypes[0],
+      places: [],
     }
   }
 
@@ -21,11 +23,11 @@ export default class MapComponent extends React.Component {
     const geocoder = new google.maps.Geocoder();
 
     geocoder.geocode({ address }, (res, status) => {
-      this.makeMapFromLocation(res[0].geometry.location);
+      this.makeMapFromLocation(res[0].geometry.location, res[0]);
     });
   }
 
-  makeMapFromLocation(location) {
+  makeMapFromLocation(location, place) {
     const { config } = window;
     const title = config.defaultName;
 
@@ -36,20 +38,23 @@ export default class MapComponent extends React.Component {
       zoom: 13
     });
 
-    this.addMarker(location, title, apartmentComplexMarker);
+    this.infoWindow = new google.maps.InfoWindow();
+    this.defaultPlace = place;
+
+    this.addMarker(location, title, apartmentComplexMarker, place);
     this.setStyles();
   }
 
   addDefaultLocationMarker() {
     const { defaultName } = window.config;
 
-    this.addMarker(this.location, defaultName, apartmentComplexMarker);
+    this.addMarker(this.location, defaultName, apartmentComplexMarker, this.defaultPlace);
   }
 
-  addMarker(location, title, iconType) {
+  addMarker(location, title, iconType, place) {
     const { Size, Point } = google.maps;
 
-    this.markers.push(new google.maps.Marker({
+    const marker = new google.maps.Marker({
       map: this.map,
       position: location,
       title,
@@ -58,7 +63,23 @@ export default class MapComponent extends React.Component {
         color: 'white',
         text: iconType,
       }
-    }));
+    });
+
+    google.maps.event.addListener(marker, 'click', () => {
+      const content = `
+        <div>
+          <strong>${place.name}</strong><br>
+          <p>${place.formatted_address}</p><br>
+          <img src="${place.photos && place.photos.length > 0 ? place.photos[0].getUrl({ maxwidth: '100', maxHeight: '100' }) : ''}" />
+          <p>${place.opening_hours && place.opening_hours.open_now ? 'open' : 'closed'}<p>
+          <p>${place.rating} stars<p>
+        </div>
+      `
+      this.infoWindow.setContent(content);
+      this.infoWindow.open(this.map, marker);
+    });
+
+    this.markers.push(marker);
   }
 
   findLocalPlaces(query) {
@@ -78,8 +99,8 @@ export default class MapComponent extends React.Component {
   addMarkersFromNearbySearchResult(res) {
     const icon = categoryToIconMap[this.state.activeType];
 
-    res.forEach(result => this.addMarker(result.geometry.location, result.name, icon));
-    this.setState({ loading: false })
+    res.forEach(result => this.addMarker(result.geometry.location, result.name, icon, result));
+    this.setState({ loading: false, places: res })
   }
 
   setStyles() {
@@ -124,18 +145,12 @@ export default class MapComponent extends React.Component {
         { loader }
         <div className="map-modal-content">
           <div className="places-menu">
-            {
-              this.state.placeTypes.map(place => {
-                return (
-                  <div
-                    className="place-type-option"
-                    onClick={() => this.changePlace(place)}
-                  >
-                    { place.substring(0, 1).toUpperCase() + place.substring(1, place.length) }
-                  </div>
-                )
-              })
-            }
+            <CategoryList
+              placeTypes={this.state.placeTypes}
+              changePlace={this.changePlace.bind(this)}
+              activeType={this.state.activeType}
+              places={this.state.places}
+            />
           </div>
           <div className="map" id="map"></div>
         </div>
