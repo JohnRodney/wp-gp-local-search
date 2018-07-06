@@ -21,11 +21,11 @@ export default class CategoryList extends Component {
 
     if (mode !== modes[0]) return <div />;
 
-    return placeTypes.map(place => (
+    return placeTypes.map(type => (
       <div>
         <Category
           changePlace={this.changePlace}
-          place={place}
+          type={type}
         />
       </div>
     ));

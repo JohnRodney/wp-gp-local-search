@@ -1,7 +1,7 @@
 export default [{
   featureType: 'poi',
-  stylers: [{visibility: 'off'}]
+  stylers: [{ visibility: 'off' }],
 }, {
   featureType: 'transit',
-  stylers: [{visibility: 'off'}]
+  stylers: [{ visibility: 'off' }],
 }];

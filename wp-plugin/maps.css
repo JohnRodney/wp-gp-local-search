@@ -18,6 +18,8 @@ html, body, #react-target, #react-target > div{
   height: 500px;
 }
 .close-map{
+  background-color: white;
+  border: none;
   padding: 10px;
   width: 40px;
   height: 40px;
@@ -81,17 +83,14 @@ html, body, #react-target, #react-target > div{
   height: 100%;
 }
 .place-type-option{
+  background-color: white;
+  border: none;
+  border-bottom: 1px solid #afafaf;
+  width: 100%;
   font-size: 16px;
   padding: 10px;
+  padding-top: 15px;
   position: relative;
-}
-.place-type-option:after{
-  content: '';
-  position: absolute;
-  border-bottom: 1px solid #afafaf;
-  bottom: -1px;
-  left: 0;
-  width: 100%;
 }
 .place-type-option:hover{
   background-color: #454545;
@@ -149,13 +148,17 @@ html, body, #react-target, #react-target > div{
   top: -2px;
 }
 .category-header {
+  background-color: white;
+  border: none;
   cursor: pointer;
+  width: 100%;
   padding-bottom: 10px;
   border-bottom: 1px solid #afafaf;
-  height: 30px;
+  height: 40px;
 }
 .category-header-icon{
   margin-top: 10px;
+  left: 20px;
   position: absolute;
 }
 .category-header h1{
