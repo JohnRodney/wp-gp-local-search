@@ -42,8 +42,8 @@ export default class MapPlaceholder extends React.Component {
         <VelocityTransitionGroup enter={{ animation: 'slideDown' }} leave={{ animation: 'slideUp' }}>
           {displayMap ? this.getMap() : undefined}
         </VelocityTransitionGroup>
-        <h1>{defaultAddress}</h1>
-        <h3>{defaultName}</h3>
+        <h1>{defaultName}</h1>
+        <h3>{defaultAddress}</h3>
         <button
           type="button"
           onClick={() => this.openMap()}

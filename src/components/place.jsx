@@ -2,12 +2,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 export default function Place(props) {
-  const { place } = props;
+  const { place, setInfoWindowFromPlace } = props;
   return (
-    <div>
+    <button
+      className="a-place-button"
+      type="button"
+      onClick={() => setInfoWindowFromPlace(place)}
+    >
       <div className="a-place-name">{ place.name }</div>
       <div className="a-place-address">{ place.formatted_address }</div>
-    </div>
+    </button>
   );
 }
 
@@ -48,4 +52,5 @@ Place.propTypes = {
     reference: PropTypes.string.isRequired,
     types: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,
   }).isRequired,
+  setInfoWindowFromPlace: PropTypes.func.isRequired,
 };

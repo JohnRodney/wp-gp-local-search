@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { VelocityTransitionGroup } from 'velocity-react';
 import Category from './category';
 import Place from './place';
+
+require('velocity-animate/velocity.ui');
 
 const modes = ['category-view', 'category-places'];
 
@@ -51,20 +54,25 @@ export default class CategoryList extends Component {
 
   getPlaces() {
     const { mode } = this.state;
-    const { places } = this.props;
+    const { places, setInfoWindowFromPlace } = this.props;
 
     if (mode !== modes[1]) return <div />;
 
+    const placesLayout = places.map((place, i) => (
+      i < 10 ? (
+        <div className="a-place">
+          <Place setInfoWindowFromPlace={setInfoWindowFromPlace} place={place} />
+        </div>) : ''
+    ));
+
     return (
       <div className="places-list">
-        {
-          places.map((place, i) => (
-            i < 10 ? (
-              <div className="a-place">
-                <Place place={place} />
-              </div>) : ''
-          ))
-        }
+        <VelocityTransitionGroup
+          enter={{ animation: 'transition.bounceLeftIn', stagger: '50' }}
+          leave={{ animation: 'transition.bounceLeftOut' }}
+        >
+          { placesLayout.length > 0 ? placesLayout : undefined }
+        </VelocityTransitionGroup>
       </div>
     );
   }
@@ -86,7 +94,13 @@ export default class CategoryList extends Component {
       <div>
         { categoryHeader }
         { placesList }
-        { placeTypesList }
+        <VelocityTransitionGroup
+          enter={{ animation: 'transition.bounceLeftIn', stagger: '50' }}
+          leave={{ animation: 'transition.bounceLeftOut' }}
+        >
+          { placeTypesList }
+        </VelocityTransitionGroup>
+
       </div>
     );
   }
@@ -132,4 +146,5 @@ CategoryList.propTypes = {
     reference: PropTypes.string.isRequired,
     types: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,
   }).isRequired).isRequired,
+  setInfoWindowFromPlace: PropTypes.func.isRequired,
 };

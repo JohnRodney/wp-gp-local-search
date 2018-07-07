@@ -4,7 +4,7 @@ import DefaultLayout from './components/default';
 import Config from './config/configstub';
 
 export default function init() {
-  window.config = Config;
+  if (!window.config) window.config = Config;
   if (document.getElementById('react-target') === null) {
     setTimeout(init, 1000);
   } else {

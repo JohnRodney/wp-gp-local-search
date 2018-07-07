@@ -3,8 +3,7 @@ import PropTypes from 'prop-types';
 import defaultMapStyles from '../config/map-styles';
 import categoryToIconMap from '../config/icon-category-map';
 import CategoryList from './category-list';
-
-const apartmentComplexMarker = 'home';
+import { apartmentComplexMarker, getContentFromPlace } from '../utilities/utility-functions';
 
 export default class MapComponent extends React.Component {
   constructor() {
@@ -13,6 +12,7 @@ export default class MapComponent extends React.Component {
 
     this.markers = [];
     this.changePlace = this.changePlace.bind(this);
+    this.setInfoWindowFromPlace = this.setInfoWindowFromPlace.bind(this);
     this.state = {
       placeTypes: config.defaultTypes,
       loading: false,
@@ -25,6 +25,18 @@ export default class MapComponent extends React.Component {
     const { config } = window;
 
     this.initMapFromConfig(config.defaultAddress);
+  }
+
+  setInfoWindowFromPlace(place) {
+    const isSame = (p, m) => (
+      m.position.lat() === p.geometry.location.lat()
+      && m.position.lng() === p.geometry.location.lng()
+    );
+    const marker = this.markers.filter(mark => isSame(place, mark))[0];
+    const content = getContentFromPlace(place);
+
+    this.infoWindow.setContent(content);
+    this.infoWindow.open(this.map, marker);
   }
 
   setStyles() {
@@ -56,7 +68,6 @@ export default class MapComponent extends React.Component {
 
     this.infoWindow = new google.maps.InfoWindow();
     this.defaultPlace = place;
-
     this.addMarker(location, title, apartmentComplexMarker, place);
     this.setStyles();
   }
@@ -72,6 +83,7 @@ export default class MapComponent extends React.Component {
       map: this.map,
       position: location,
       title,
+      animation: google.maps.Animation.DROP,
       label: {
         fontFamily: 'Material Icons',
         color: 'white',
@@ -80,16 +92,7 @@ export default class MapComponent extends React.Component {
     });
 
     google.maps.event.addListener(marker, 'click', () => {
-      const content = `
-        <div>
-          <strong>${place.name}</strong><br>
-          <p>${place.formatted_address}</p><br>
-          <img src="${place.photos && place.photos.length > 0 ? place.photos[0].getUrl({ maxwidth: '100', maxHeight: '100' }) : ''}" />
-          <p>${place.opening_hours && place.opening_hours.open_now ? 'open' : 'closed'}<p>
-          <p>${place.rating} stars<p>
-        </div>
-      `;
-
+      const content = getContentFromPlace(place);
       this.infoWindow.setContent(content);
       this.infoWindow.open(this.map, marker);
     });
@@ -123,7 +126,7 @@ export default class MapComponent extends React.Component {
     const activeType = place.toLowerCase();
 
     this.clearMarkers();
-    this.setState({ activeType });
+    this.setState({ activeType, places: [] });
     this.findLocalPlaces(place);
   }
 
@@ -153,6 +156,7 @@ export default class MapComponent extends React.Component {
         <div className="map-modal-content">
           <div className="places-menu">
             <CategoryList
+              setInfoWindowFromPlace={this.setInfoWindowFromPlace}
               placeTypes={placeTypes}
               changePlace={this.changePlace}
               activeType={activeType}
