@@ -20,9 +20,9 @@ export const getContentFromPlace = place => (`
       </div>
       ${place.rating ? `<div class="${colorFromRating(place.rating)}">${place.rating} <i class="material-icons info-window-star">star_rate</i></div>` : ''}
     </div>
-    <p>${place.formatted_address}</p><br>
+    <p>${place.formatted_address}</p>
     <div class="info-window-img-container">
-      <img class="info-window-img" src="${place.photos && place.photos.length > 0 ? place.photos[0].getUrl({ maxwidth: '500', maxHeight: '500' }) : ''}" />
+      <img class="info-window-img" src="${place.photos && place.photos.length > 0 ? place.photos[0].getUrl({ maxwidth: '500', maxHeight: '350' }) : ''}" />
     </div>
   </div>
 `);

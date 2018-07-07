@@ -240,7 +240,10 @@ html, body, #react-target, #react-target > div{
   color: white;
 }
 .info-window-img{
-  width: 100%;
+  margin-left: auto;
+  display: block;
+  margin-right: auto;
+  box-shadow: 0 0 20px #545454;
 }
 .info-window-right{
   font-size: 22px;
@@ -275,8 +278,11 @@ html, body, #react-target, #react-target > div{
   margin-right: 20px;
 }
 .info-window-img-container{
+  margin-top: 10px;
   max-height: 400px;
   overflow: hidden;
+  padding: 20px;
+  border-top: 1px solid #bfbfbf;
 }
 .green{
   color: #4CAF50 !important;
