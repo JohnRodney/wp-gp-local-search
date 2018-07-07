@@ -247,7 +247,7 @@ html, body, #react-target, #react-target > div{
   margin-left: auto;
   display: block;
   margin-right: auto;
-  box-shadow: 0 0 20px #545454;
+  box-shadow: 0 0 20px #afafaf;
 }
 .info-window-right{
   font-size: 22px;

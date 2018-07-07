@@ -37,6 +37,7 @@ export default class MapComponent extends React.Component {
 
     this.infoWindow.setContent(content);
     this.infoWindow.open(this.map, marker);
+    this.map.setCenter({ lat: marker.position.lat(), lng: marker.position.lng()});
   }
 
   setStyles() {

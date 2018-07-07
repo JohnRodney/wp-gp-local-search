@@ -22,7 +22,7 @@ export const getContentFromPlace = place => (`
     </div>
     <p>${place.formatted_address}</p>
     <div class="info-window-img-container">
-      <img class="info-window-img" src="${place.photos && place.photos.length > 0 ? place.photos[0].getUrl({ maxwidth: '500', maxHeight: '350' }) : ''}" />
+      <img class="info-window-img" src="${place.photos && place.photos.length > 0 ? place.photos[0].getUrl({ maxwidth: '500', maxHeight: '220' }) : ''}" />
     </div>
   </div>
 `);
