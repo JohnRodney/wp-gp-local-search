@@ -253,22 +253,22 @@ html, body, #react-target, #react-target > div{
   font-size: 22px;
   display: inline-block;
   vertical-align: middle;
+  font-weight: 400;
 }
 .info-window-right div{
   color: #343434;
-  text-shadow: 0 0 5px #343434;
-  margin: 5px;
+  margin-right: 5px;
+  vertical-align: middle;
   border-radius: 5px;
   text-transform: capitalize;
   display: inherit;
 }
 .info-window-star{
   color: yellow;
-  font-size: 22px !important;
-  top: 4px;
+  text-shadow: -1px 0 #FBC02D, 0 1px #FBC02D, 1px 0 #FBC02D, 0 -1px #FBC02D;
+  top: 3px;
   width: 25px;
   position: relative;
-  text-shadow: 0 0 5px #343434;
 }
 .scroll-fix {
   line-height: 1.35;
@@ -283,17 +283,22 @@ html, body, #react-target, #react-target > div{
 }
 .info-window-img-container{
   margin-top: 10px;
-  max-height: 400px;
   overflow: hidden;
   padding: 20px;
-  border-top: 1px solid #bfbfbf;
+  background-size: cover;
+  min-height: 150px;
+  background-position: center;
+}
+.info-window-container p{
+  display: inline-block;
 }
 .green{
-  color: #4CAF50 !important;
+  color: #2E7D32 !important;
 }
 .red{
-  color: #f44336 !important;
+  color: #c62828 !important;
 }
 .orange{
   color: #F9A825 !important;
 }
+

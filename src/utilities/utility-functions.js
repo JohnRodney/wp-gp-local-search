@@ -10,19 +10,19 @@ export const colorFromRating = (ratingString) => {
 };
 
 export const getContentFromPlace = place => (`
-  <div class="scroll-fix info-window-container">
-    <strong class="info-window-name">${place.name}</strong>
+  <div class="scroll-fix info-window-container" >
+    <strong class="info-window-name">${place.name}</strong><br />
     <div class="info-window-right">
       <div
         class="${place.opening_hours && place.opening_hours.open_now ? 'green' : 'red'}"
       >
         ${place.opening_hours && place.opening_hours.open_now ? 'open' : 'closed'}
       </div>
-      ${place.rating ? `<div class="${colorFromRating(place.rating)}">${place.rating} <i class="material-icons info-window-star">star_rate</i></div>` : ''}
-    </div>
+      <div id="rating-target"></div>
+      ${place.rating ? `<div id="place-rating">${place.rating}</div>` : ''}
+    </div><br />
     <p>${place.formatted_address}</p>
-    <div class="info-window-img-container">
-      <img class="info-window-img" src="${place.photos && place.photos.length > 0 ? place.photos[0].getUrl({ maxwidth: '500', maxHeight: '220' }) : ''}" />
+    <div class="info-window-img-container" style="background-image: url(${place.photos && place.photos.length > 0 ? place.photos[0].getUrl({ maxwidth: '1000', maxHeight: '1000' }) : ''});">
     </div>
   </div>
 `);

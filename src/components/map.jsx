@@ -1,9 +1,28 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import StarRatings from 'react-star-ratings';
+import ReactDOM from 'react-dom';
 import defaultMapStyles from '../config/map-styles';
 import categoryToIconMap from '../config/icon-category-map';
 import CategoryList from './category-list';
 import { apartmentComplexMarker, getContentFromPlace } from '../utilities/utility-functions';
+
+const initializeStarRating = () => {
+  const ratingElement = document.getElementById('place-rating');
+  const rating = parseFloat(ratingElement.innerHTML);
+
+  ratingElement.innerHTML = '';
+  ReactDOM.render(
+    <StarRatings
+      rating={rating}
+      starDimension="20px"
+      starRatedColor="#FBC02D"
+      starSpacing="0"
+    />,
+    document.getElementById('rating-target'),
+  );
+};
+
 
 export default class MapComponent extends React.Component {
   constructor() {
@@ -37,7 +56,8 @@ export default class MapComponent extends React.Component {
 
     this.infoWindow.setContent(content);
     this.infoWindow.open(this.map, marker);
-    this.map.setCenter({ lat: marker.position.lat(), lng: marker.position.lng()});
+    this.map.setCenter({ lat: marker.position.lat(), lng: marker.position.lng() });
+    initializeStarRating();
   }
 
   setStyles() {
@@ -46,6 +66,21 @@ export default class MapComponent extends React.Component {
 
     this.map.setOptions({ styles });
     this.findLocalPlaces(placeTypes[0]);
+  }
+
+  initializeStarRating() {
+    const ratingElement = document.getElementById('place-rating');
+    const rating = parseFloat(ratingElement.innerHTML);
+    ratingElement.innerHTML = '';
+    ReactDOM.render(
+      <StarRatings
+        rating={rating}
+        starDimension="20px"
+        starRatedColor="#FBC02D"
+        starSpacing="0"
+      />,
+      document.getElementById('rating-target'),
+    );
   }
 
   initMapFromConfig(address) {
@@ -96,6 +131,7 @@ export default class MapComponent extends React.Component {
       const content = getContentFromPlace(place);
       this.infoWindow.setContent(content);
       this.infoWindow.open(this.map, marker);
+      initializeStarRating();
     });
 
     this.markers.push(marker);
@@ -165,7 +201,7 @@ export default class MapComponent extends React.Component {
             />
           </div>
           <div className="map" id="map" />
-        </div>
+                  </div>
       </div>
     );
   }

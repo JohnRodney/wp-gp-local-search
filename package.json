@@ -33,6 +33,7 @@
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
     "react-flip-move": "^3.0.2",
+    "react-star-ratings": "^2.3.0",
     "velocity-animate": "^1.5.1",
     "velocity-react": "^1.4.1"
   },
