@@ -54,6 +54,7 @@ export default class MapComponent extends React.Component {
     const marker = this.markers.filter(mark => isSame(place, mark))[0];
     const content = getContentFromPlace(place);
 
+    console.log(place);
     this.infoWindow.setContent(content);
     this.infoWindow.open(this.map, marker);
     this.map.setCenter({ lat: marker.position.lat(), lng: marker.position.lng() });
