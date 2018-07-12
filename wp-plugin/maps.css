@@ -78,9 +78,15 @@ html, body, #react-target, #react-target > div{
 .places-menu{
   display: inline-block;
   width: 250px;
+  overflow-x: hidden;
+  overflow-y: scroll;
   vertical-align: top;
   z-index: 2;
   background-color: transparent;
+  max-height: 600px;
+}
+.places-menu::-webkit-scrollbar { 
+  display: none; 
 }
 #map{
   display: inline-block;

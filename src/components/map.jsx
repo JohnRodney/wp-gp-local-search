@@ -147,7 +147,7 @@ export default class MapComponent extends React.Component {
     const { location } = this;
     const request = {
       location,
-      rankBy: google.maps.places.RankBy.DISTANCE,
+      radius: 1000,
       query,
     };
 

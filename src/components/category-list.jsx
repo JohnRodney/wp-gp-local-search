@@ -59,7 +59,7 @@ export default class CategoryList extends Component {
     if (mode !== modes[1]) return <div />;
 
     const placesLayout = places.map((place, i) => (
-      i < 10 ? (
+      i < 100 ? (
         <div className="a-place">
           <Place setInfoWindowFromPlace={setInfoWindowFromPlace} place={place} />
         </div>) : ''

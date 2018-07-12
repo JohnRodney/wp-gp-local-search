@@ -44,7 +44,17 @@ class GPLocalSearch {
   }
 
   public function getReactApplicationTargetDiv($atts) {
-    return "<div id='gp-react-target'></div>";
+    $style = "";
+
+    if (isset($atts['max-height'])) {
+      $style .= "max-height: " . $atts['max-height'] . "px;";
+    }
+
+    if (isset($atts['max-width'])) {
+      $style .= "max-width: " . $atts['max-width'] . "px;";
+    }
+
+    return "<div id='gp-react-target' style='" . $style . "'></div>";
   }
 
   public function setupMapConfig() {
