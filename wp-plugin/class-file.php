@@ -40,6 +40,11 @@ class GPLocalSearch {
     );
 
     add_action('wp_head', array($this, 'setupMapConfig'));
+    add_shortcode('gp-search-map', array('GPLocalSearch', 'getReactApplicationTargetDiv'));
+  }
+
+  public function getReactApplicationTargetDiv($atts) {
+    return "<div id='gp-react-target'>hi</div>";
   }
 
   public function setupMapConfig() {
@@ -80,11 +85,15 @@ class GPLocalSearch {
     wp_enqueue_script($handle, $this->scriptHandlesLocationPairs[$handle]);
   }
 
+  public function queScriptWithVersion($handle) {
+    wp_enqueue_script($handle, $this->scriptHandlesLocationPairs[$handle], array(), date("h:i:s"));
+  }
+
   /* register all the scripts and styles for the application */
   public function registerScriptsAndStyles() {
     $this->queStyle($this->baseStyleHandle);
     $this->queStyle($this->iconStyleHandle);
-    $this->queScript($this->mainScriptHandle);
+    $this->queScriptWithVersion($this->mainScriptHandle);
     $this->queScript($this->mapScriptHandle);
   }
 }

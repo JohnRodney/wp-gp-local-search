@@ -54,7 +54,7 @@ export default class MapComponent extends React.Component {
     const marker = this.markers.filter(mark => isSame(place, mark))[0];
     const content = getContentFromPlace(place);
 
-    console.log(place);
+    console.log(place)
     this.infoWindow.setContent(content);
     this.infoWindow.open(this.map, marker);
     this.map.setCenter({ lat: marker.position.lat(), lng: marker.position.lng() });
@@ -99,35 +99,37 @@ export default class MapComponent extends React.Component {
     this.location = location;
     this.map = new google.maps.Map(document.getElementById('map'), {
       center: location,
+      zoomControl: true,
       disableDefaultUI: true,
       zoom: 13,
     });
 
     this.infoWindow = new google.maps.InfoWindow();
     this.defaultPlace = place;
-    this.addMarker(location, title, apartmentComplexMarker, place);
+    this.defaultPlace.name = title;
+    this.addMarker(location, title, apartmentComplexMarker, place, true);
     this.setStyles();
   }
 
   addDefaultLocationMarker() {
     const { defaultName } = window.config;
 
-    this.addMarker(this.location, defaultName, apartmentComplexMarker, this.defaultPlace);
+    this.addMarker(this.location, defaultName, apartmentComplexMarker, this.defaultPlace, true);
   }
 
-  addMarker(location, title, iconType, place) {
+  addMarker(location, title, iconType, place, disable) {
     const marker = new google.maps.Marker({
       map: this.map,
       position: location,
       title,
       animation: google.maps.Animation.DROP,
-      label: {
-        fontFamily: 'Material Icons',
-        color: 'white',
-        text: iconType,
-      },
+      icon: place.icon ? {
+        url: place.icon,
+        scaledSize: new google.maps.Size(20, 20),
+      } : null,
     });
 
+    if (disable) { return; }
     google.maps.event.addListener(marker, 'click', () => {
       const content = getContentFromPlace(place);
       this.infoWindow.setContent(content);
@@ -158,6 +160,7 @@ export default class MapComponent extends React.Component {
 
     res.forEach(result => this.addMarker(result.geometry.location, result.name, icon, result));
     this.setState({ loading: false, places: res });
+    this.resetZoomToMarkers();
   }
 
   changePlace(place) {
@@ -172,6 +175,13 @@ export default class MapComponent extends React.Component {
     this.markers.forEach(marker => marker.setMap(null));
     this.markers = [];
     this.addDefaultLocationMarker();
+  }
+
+  resetZoomToMarkers() {
+    const bounds = new google.maps.LatLngBounds();
+    this.markers.forEach(marker => bounds.extend(marker.getPosition()));
+
+    this.map.fitBounds(bounds);
   }
 
   render() {

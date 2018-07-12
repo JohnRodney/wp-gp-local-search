@@ -5,9 +5,12 @@ import Config from './config/configstub';
 
 export default function init() {
   if (!window.config) window.config = Config;
-  if (document.getElementById('react-target') === null) {
+  console.log('looking for target')
+  if (document.getElementById('gp-react-target') === null) {
+    console.log('no target found')
     setTimeout(init, 1000);
   } else {
-    ReactDOM.render(<DefaultLayout />, document.getElementById('react-target'));
+    console.log('found target', document.getElementById('gp-react-target'))
+    ReactDOM.render(<DefaultLayout />, document.getElementById('gp-react-target'));
   }
 }
