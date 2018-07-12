@@ -155,11 +155,23 @@ export default class MapComponent extends React.Component {
   }
 
   addMarkersFromNearbySearchResult(res) {
+    const { defaultFilters } = window.config;
     const { activeType } = this.state;
     const icon = categoryToIconMap[activeType];
+    const filtered = res.filter((place) => {
+      let needsRemoved = false;
 
-    res.forEach(result => this.addMarker(result.geometry.location, result.name, icon, result));
-    this.setState({ loading: false, places: res });
+      defaultFilters.forEach((filter) => {
+        if (place.name.toLowerCase().indexOf(filter.toLowerCase()) > -1) {
+          needsRemoved = true;
+        }
+      });
+
+      return !needsRemoved;
+    });
+
+    filtered.forEach(result => this.addMarker(result.geometry.location, result.name, icon, result));
+    this.setState({ loading: false, places: filtered });
     this.resetZoomToMarkers();
   }
 
@@ -189,19 +201,24 @@ export default class MapComponent extends React.Component {
       loading, placeTypes, activeType, places,
     } = this.state;
     const loader = loading ? <div className="loader" /> : '';
-    const { close } = this.props;
+    const { close, isModal } = this.props;
+    const isModalClassName = `map-component-modal ${isModal ? 'is-modal' : ''}`;
+    const isModalConetentClassName = `map-modal-content ${isModal ? 'is-modal' : ''}`;
+    const closeButton = isModal ? (
+      <button
+        type="button"
+        className="close-map"
+        onClick={() => close()}
+      >
+        <i className="material-icons">close</i>
+      </button>
+    ) : null;
 
     return (
-      <div className="map-component-modal">
-        <button
-          type="button"
-          className="close-map"
-          onClick={() => close()}
-        >
-          <i className="material-icons">close</i>
-        </button>
+      <div className={isModalClassName}>
+        { closeButton }
         { loader }
-        <div className="map-modal-content">
+        <div className={isModalConetentClassName}>
           <div className="places-menu">
             <CategoryList
               setInfoWindowFromPlace={this.setInfoWindowFromPlace}
@@ -212,7 +229,7 @@ export default class MapComponent extends React.Component {
             />
           </div>
           <div className="map" id="map" />
-                  </div>
+        </div>
       </div>
     );
   }
@@ -220,4 +237,5 @@ export default class MapComponent extends React.Component {
 
 MapComponent.propTypes = {
   close: PropTypes.func.isRequired,
+  isModal: PropTypes.bool.isRequired,
 };

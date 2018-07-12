@@ -95,6 +95,14 @@ class MySettingsPage
         );
 
         add_settings_field(
+            'filters',
+            'Search Filters',
+            array( $this, 'filters_callback' ),
+            'my-setting-admin',
+            'setting_section_id'
+        );
+
+        add_settings_field(
             'google-places-api-key',
             'Google Places Api Key',
             array( $this, 'api_key_callback' ),
@@ -122,6 +130,9 @@ class MySettingsPage
         if( isset( $input['categories'] ) )
             $new_input['categories'] = sanitize_text_field( $input['categories'] );
 
+        if( isset( $input['filters'] ) )
+            $new_input['filters'] = sanitize_text_field( $input['filters'] );
+
         if( isset( $input['google-places-api-key'] ) )
             $new_input['google-places-api-key'] = sanitize_text_field( $input['google-places-api-key'] );
 
@@ -135,6 +146,18 @@ class MySettingsPage
     {
         print '<hr>';
     }
+
+    /**
+     * Get the settings option array and print one of its values
+     */
+    public function filters_callback()
+    {
+        printf(
+            '<input style="width: 500px" type="text" id="filters" name="my_option_name[filters]" value="%s" />',
+            isset( $this->options['filters'] ) ? esc_attr( $this->options['filters']) : ''
+        );
+    }
+
     /**
      * Get the settings option array and print one of its values
      */

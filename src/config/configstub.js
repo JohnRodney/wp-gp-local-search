@@ -4,4 +4,7 @@ export default {
   defaultTypes: [
     'restaurants', 'coffee', 'bars', 'groceries', 'parks', 'schools', 'shopping', 'entertainment', 'movies',
   ],
+  defaultFilters: [
+    'hooters',
+  ],
 };

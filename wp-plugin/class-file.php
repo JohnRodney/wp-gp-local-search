@@ -44,7 +44,7 @@ class GPLocalSearch {
   }
 
   public function getReactApplicationTargetDiv($atts) {
-    return "<div id='gp-react-target'>hi</div>";
+    return "<div id='gp-react-target'></div>";
   }
 
   public function setupMapConfig() {
@@ -56,6 +56,7 @@ class GPLocalSearch {
            defaultName: "' . $this->options['name'] . '",
            defaultAddress: "' .$this->options['location'] . '",
            defaultTypes: "' .$this->options['categories'] . '".split(\',\'),
+           defaultFilters: "' .$this->options['filters'] . '".split(\',\'),
          }
        </script>
     ';
@@ -77,12 +78,12 @@ class GPLocalSearch {
 
   /* a method for shorthand adding the styles */
   public function queStyle($handle) {
-    wp_enqueue_style($handle, $this->scriptHandlesLocationPairs[$handle]);
+    wp_enqueue_style($handle, $this->scriptHandlesLocationPairs[$handle], array(), date("h:i:s"));
   }
 
   /* a method for shorthand adding the script */
   public function queScript($handle) {
-    wp_enqueue_script($handle, $this->scriptHandlesLocationPairs[$handle]);
+    wp_enqueue_script($handle, $this->scriptHandlesLocationPairs[$handle], array(), date("h:i:s"));
   }
 
   public function queScriptWithVersion($handle) {

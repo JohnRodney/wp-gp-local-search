@@ -7,18 +7,20 @@ export default class MapPlaceholder extends React.Component {
     super();
     this.closeMap = this.closeMap.bind(this);
     this.state = {
-      displayMap: false,
+      displayMap: true,
+      isModal: false,
     };
   }
 
   getMap() {
-    const { displayMap } = this.state;
+    const { displayMap, isModal } = this.state;
+    const isModalClassName = `map-container ${isModal ? 'is-modal' : ''}`;
     if (!displayMap) return <div />;
 
     return (
-      <div className="map-container">
-        <div className="map-mask" />
-        <Map close={this.closeMap} />
+      <div className={isModalClassName}>
+        { isModal ? <div className="map-mask" /> : null }
+        <Map isModal={isModal} close={this.closeMap} />
       </div>
     );
   }
@@ -35,10 +37,10 @@ export default class MapPlaceholder extends React.Component {
 
   render() {
     const { defaultAddress, defaultName } = window.config;
-    const { displayMap } = this.state;
+    const { displayMap, isModal } = this.state;
 
-    return (
-      <div className="default-map-container">
+    const modalLayout = (
+      <div>
         <VelocityTransitionGroup enter={{ animation: 'slideDown' }} leave={{ animation: 'slideUp' }}>
           {displayMap ? this.getMap() : undefined}
         </VelocityTransitionGroup>
@@ -50,6 +52,14 @@ export default class MapPlaceholder extends React.Component {
         >
           Open Map
         </button>
+      </div>
+    );
+
+    const layout = isModal ? modalLayout : this.getMap();
+
+    return (
+      <div className="default-map-container">
+        {layout}
       </div>
     );
   }

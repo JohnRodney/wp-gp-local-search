@@ -9,7 +9,7 @@
         "src",
         "wp-plugin"
       ],
-      "extensions": "js, jsx, php",
+      "extensions": "js, jsx, php, css",
       "ignore": [
         "lib",
         "dist",
