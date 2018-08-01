@@ -184,8 +184,6 @@ export default class MapComponent extends React.Component {
 
   clearMarkers() {
     let persistantMarker;
-    console.log(this.markers)
-    //this.markers = this.markers.filter(marker => marker);
 
     this.markers.forEach((marker) => {
       const isPlace = !!this.defaultPlace.geometry;
