@@ -5,7 +5,11 @@ import ReactDOM from 'react-dom';
 import defaultMapStyles from '../config/map-styles';
 import categoryToIconMap from '../config/icon-category-map';
 import CategoryList from './category-list';
-import { apartmentComplexMarker, getContentFromPlace } from '../utilities/utility-functions';
+import {
+  apartmentComplexMarker, getContentFromPlace, distanceBetweenPlaces,
+} from '../utilities/utility-functions';
+
+const distanceThreshhold = 20;
 
 const initializeStarRating = () => {
   const ratingElement = document.getElementById('place-rating');
@@ -42,8 +46,13 @@ export default class MapComponent extends React.Component {
 
   componentDidMount() {
     const { config } = window;
+    const { lat, lng } = config;
 
-    this.initMapFromConfig(config.defaultAddress);
+    if (lat && lng) {
+      this.makeMapFromLocation({ lat, lng });
+    } else {
+      this.initMapFromConfig(config.defaultAddress);
+    }
   }
 
   setInfoWindowFromPlace(place) {
@@ -52,9 +61,9 @@ export default class MapComponent extends React.Component {
       && m.position.lng() === p.geometry.location.lng()
     );
     const marker = this.markers.filter(mark => isSame(place, mark))[0];
+    if (!marker) { return; }
     const content = getContentFromPlace(place);
 
-    console.log(place)
     this.infoWindow.setContent(content);
     this.infoWindow.open(this.map, marker);
     this.map.setCenter({ lat: marker.position.lat(), lng: marker.position.lng() });
@@ -67,21 +76,6 @@ export default class MapComponent extends React.Component {
 
     this.map.setOptions({ styles });
     this.findLocalPlaces(placeTypes[0]);
-  }
-
-  initializeStarRating() {
-    const ratingElement = document.getElementById('place-rating');
-    const rating = parseFloat(ratingElement.innerHTML);
-    ratingElement.innerHTML = '';
-    ReactDOM.render(
-      <StarRatings
-        rating={rating}
-        starDimension="20px"
-        starRatedColor="#FBC02D"
-        starSpacing="0"
-      />,
-      document.getElementById('rating-target'),
-    );
   }
 
   initMapFromConfig(address) {
@@ -105,9 +99,9 @@ export default class MapComponent extends React.Component {
     });
 
     this.infoWindow = new google.maps.InfoWindow();
-    this.defaultPlace = place;
+    this.defaultPlace = place || { location };
     this.defaultPlace.name = title;
-    this.addMarker(location, title, apartmentComplexMarker, place, true);
+    this.addMarker(location, title, apartmentComplexMarker, place || this.defaultPlace, true);
     this.setStyles();
   }
 
@@ -129,6 +123,7 @@ export default class MapComponent extends React.Component {
       } : null,
     });
 
+    this.markers.push(marker);
     if (disable) { return; }
     google.maps.event.addListener(marker, 'click', () => {
       const content = getContentFromPlace(place);
@@ -136,8 +131,6 @@ export default class MapComponent extends React.Component {
       this.infoWindow.open(this.map, marker);
       initializeStarRating();
     });
-
-    this.markers.push(marker);
   }
 
   findLocalPlaces(query) {
@@ -162,10 +155,16 @@ export default class MapComponent extends React.Component {
       let needsRemoved = false;
 
       defaultFilters.forEach((filter) => {
-        if (place.name.toLowerCase().indexOf(filter.toLowerCase()) > -1) {
+        if (place.name.toLowerCase().indexOf(filter.toLowerCase()) > -1 && filter !== '') {
           needsRemoved = true;
         }
       });
+
+      const distance = distanceBetweenPlaces(this.defaultPlace, place);
+
+      if (distance > distanceThreshhold) {
+        needsRemoved = true;
+      }
 
       return !needsRemoved;
     });
@@ -184,14 +183,35 @@ export default class MapComponent extends React.Component {
   }
 
   clearMarkers() {
-    this.markers.forEach(marker => marker.setMap(null));
-    this.markers = [];
-    this.addDefaultLocationMarker();
+    let persistantMarker;
+    console.log(this.markers)
+    //this.markers = this.markers.filter(marker => marker);
+
+    this.markers.forEach((marker) => {
+      const isPlace = !!this.defaultPlace.geometry;
+      const { defaultPlace } = this;
+      const defaultLat = isPlace ? defaultPlace.geometry.location.lat() : defaultPlace.location.lat;
+      const defaultLng = isPlace ? defaultPlace.geometry.location.lng() : defaultPlace.location.lng;
+      const sameLat = marker.position.lat().toFixed(6) === defaultLat.toFixed(6);
+      const sameLong = marker.position.lng().toFixed(6) === defaultLng.toFixed(6);
+
+      if (sameLat && sameLong) {
+        persistantMarker = marker;
+      } else {
+        marker.setMap(null);
+      }
+    });
+
+    this.markers = [persistantMarker];
   }
 
   resetZoomToMarkers() {
     const bounds = new google.maps.LatLngBounds();
-    this.markers.forEach(marker => bounds.extend(marker.getPosition()));
+    this.markers.forEach((marker) => {
+      if (marker && marker.getPosition) {
+        bounds.extend(marker.getPosition());
+      }
+    });
 
     this.map.fitBounds(bounds);
   }
@@ -201,7 +221,7 @@ export default class MapComponent extends React.Component {
       loading, placeTypes, activeType, places,
     } = this.state;
     const loader = loading ? <div className="loader" /> : '';
-    const { close, isModal } = this.props;
+    const { close, isModal, listView } = this.props;
     const isModalClassName = `map-component-modal ${isModal ? 'is-modal' : ''}`;
     const isModalConetentClassName = `map-modal-content ${isModal ? 'is-modal' : ''}`;
     const closeButton = isModal ? (
@@ -214,21 +234,25 @@ export default class MapComponent extends React.Component {
       </button>
     ) : null;
 
+    const placesMenuClassName = `places-menu ${listView ? '' : 'as-dropdown'}`;
+    const mapClassName = `map ${listView ? '' : 'as-dropdown'}`;
+
     return (
       <div className={isModalClassName}>
         { closeButton }
         { loader }
         <div className={isModalConetentClassName}>
-          <div className="places-menu">
+          <div className={placesMenuClassName}>
             <CategoryList
               setInfoWindowFromPlace={this.setInfoWindowFromPlace}
               placeTypes={placeTypes}
               changePlace={this.changePlace}
               activeType={activeType}
               places={places}
+              listView={listView}
             />
           </div>
-          <div className="map" id="map" />
+          <div className={mapClassName} id="map" />
         </div>
       </div>
     );
@@ -238,4 +262,5 @@ export default class MapComponent extends React.Component {
 MapComponent.propTypes = {
   close: PropTypes.func.isRequired,
   isModal: PropTypes.bool.isRequired,
+  listView: PropTypes.bool.isRequired,
 };

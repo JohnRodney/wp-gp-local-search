@@ -21,3 +21,29 @@ export const getContentFromPlace = place => (`
     </div>
   </div>
 `);
+
+export const distanceBetweenPlaces = (place1, place2, unit) => {
+  const isGooglePlace = !!place1.geometry;
+  const sin = n => Math.sin(n);
+  const cos = n => Math.cos(n);
+  const lat1 = isGooglePlace ? place1.geometry.location.lat() : place1.location.lat;
+  const long1 = isGooglePlace ? place1.geometry.location.lng() : place1.location.lng;
+  const lat2 = place2.geometry.location.lat();
+  const long2 = place2.geometry.location.lng();
+  const radlat1 = Math.PI * lat1 / 180;
+  const radlat2 = Math.PI * lat2 / 180;
+  const theta = long1 - long2;
+  const radtheta = Math.PI * theta / 180;
+  let dist = sin(radlat1) * sin(radlat2) + cos(radlat1) * cos(radlat2) * cos(radtheta);
+
+  if (dist > 1) {
+    dist = 1;
+  }
+
+  dist = Math.acos(dist);
+  dist = dist * 180 / Math.PI;
+  dist = dist * 60 * 1.1515;
+  if (unit === 'K') { dist *= 1.609344; }
+  if (unit === 'N') { dist *= 0.8684; }
+  return dist;
+};

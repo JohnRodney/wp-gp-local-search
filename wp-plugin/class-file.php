@@ -63,10 +63,13 @@ class GPLocalSearch {
     $script = '
        <script>
          window.config = {
+           lng: ' . $this->options['longitude']  . ',
+           lat: ' . $this->options['latitude']  . ',
            defaultName: "' . $this->options['name'] . '",
            defaultAddress: "' .$this->options['location'] . '",
            defaultTypes: "' .$this->options['categories'] . '".split(\',\'),
            defaultFilters: "' .$this->options['filters'] . '".split(\',\'),
+           listView: "' .$this->options['list-view'] . '",
          }
        </script>
     ';

@@ -50,7 +50,6 @@ html, body, #react-target, #react-target > div{
 .map-modal-content{
   height: 100%;
   width: 100%;
-  border-top: 1px solid #afafaf;
   overflow: hidden;
 }
 .map-component-modal{
@@ -88,9 +87,14 @@ html, body, #react-target, #react-target > div{
 .places-menu::-webkit-scrollbar { 
   display: none; 
 }
+.map{
+  width: calc(100% - 250px);
+}
+.map.as-dropdown{
+  width: 100%;
+}
 #map{
   display: inline-block;
-  width: calc(100% - 250px);
   min-height: 600px;
   z-index: 1;
   box-shadow: 0px 0px 1px #565656;
@@ -169,6 +173,7 @@ html, body, #react-target, #react-target > div{
   border: none;
   cursor: pointer;
   width: 100%;
+  padding-top: 10px;
   padding-bottom: 10px;
   border-bottom: 1px solid white;
 }
@@ -192,6 +197,7 @@ html, body, #react-target, #react-target > div{
   width: 80%;
   font-size: 20px;
   text-transform: capitalize;
+  color: #343434;
   font-weight: 400;
 }
 .a-place{
@@ -313,4 +319,12 @@ html, body, #react-target, #react-target > div{
 .orange{
   color: #F9A825 !important;
 }
-
+.gp-search-places-dropdown {
+  position: absolute;
+  top: 30px;
+  left: 20px;
+  z-index: 10;
+  padding: 5px;
+  font-size: 16px;
+  box-shadow: 0 0 5px #afafaf;
+}

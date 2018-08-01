@@ -80,7 +80,7 @@ class MySettingsPage
 
         add_settings_field(
             'name',
-            'Location Name',
+            'Location Name (Display Name to use on the map)',
             array( $this, 'name_callback' ),
             'my-setting-admin',
             'setting_section_id'
@@ -88,7 +88,7 @@ class MySettingsPage
 
         add_settings_field(
             'categories',
-            'Search Categories',
+            'Search Categories (This should be a list of words seperated by commas IE: "coffee, bars, parks")',
             array( $this, 'categories_callback' ),
             'my-setting-admin',
             'setting_section_id'
@@ -96,7 +96,7 @@ class MySettingsPage
 
         add_settings_field(
             'filters',
-            'Search Filters',
+            'Search Filters You want removed from results <br>(This should be a list of words seperated by commas IE: "hooters, club, strip") ',
             array( $this, 'filters_callback' ),
             'my-setting-admin',
             'setting_section_id'
@@ -106,6 +106,30 @@ class MySettingsPage
             'google-places-api-key',
             'Google Places Api Key',
             array( $this, 'api_key_callback' ),
+            'my-setting-admin',
+            'setting_section_id'
+        );
+
+        add_settings_field(
+            'list-view',
+            'Display the categories as a list (default) dropdown when false',
+            array( $this, 'list_view_callback' ),
+            'my-setting-admin',
+            'setting_section_id'
+        );
+
+        add_settings_field(
+            'longitude',
+            'The longitude to set the map center (optional)',
+            array( $this, 'longitude_callback' ),
+            'my-setting-admin',
+            'setting_section_id'
+        );
+
+        add_settings_field(
+            'latitude',
+            'The latitude to set the map center (optional)',
+            array( $this, 'latitude_callback' ),
             'my-setting-admin',
             'setting_section_id'
         );
@@ -136,6 +160,15 @@ class MySettingsPage
         if( isset( $input['google-places-api-key'] ) )
             $new_input['google-places-api-key'] = sanitize_text_field( $input['google-places-api-key'] );
 
+        if( isset( $input['list-view'] ) )
+            $new_input['list-view'] = sanitize_text_field( $input['list-view'] );
+
+        if( isset( $input['longitude'] ) )
+            $new_input['longitude'] = sanitize_text_field( $input['longitude'] );
+
+        if( isset( $input['latitude'] ) )
+            $new_input['latitude'] = sanitize_text_field( $input['latitude'] );
+
         return $new_input;
     }
 
@@ -145,6 +178,39 @@ class MySettingsPage
     public function print_section_info()
     {
         print '<hr>';
+    }
+
+    /**
+     * Get the settings option array and print one of its values
+     */
+    public function latitude_callback()
+    {
+        printf(
+            '<input style="width: 500px" type="text" id="latitude" name="my_option_name[latitude]" value="%s" />',
+            isset( $this->options['latitude'] ) ? esc_attr( $this->options['latitude']) : ''
+        );
+    }
+
+
+    /**
+     * Get the settings option array and print one of its values
+     */
+    public function longitude_callback()
+    {
+        printf(
+            '<input style="width: 500px" type="text" id="longitude" name="my_option_name[longitude]" value="%s" />',
+            isset( $this->options['longitude'] ) ? esc_attr( $this->options['longitude']) : ''
+        );
+    }
+
+    /**
+     * Get the settings option array and print one of its values
+     */
+    public function list_view_callback()
+    {
+      ?>
+        <input name="my_option_name[list-view]" id="list-view" type="checkbox" value="1" <?php checked( '1', $this->options['list-view'] ); ?> />
+      <?php
     }
 
     /**

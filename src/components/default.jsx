@@ -14,13 +14,14 @@ export default class MapPlaceholder extends React.Component {
 
   getMap() {
     const { displayMap, isModal } = this.state;
+    const { listView } = window.config;
     const isModalClassName = `map-container ${isModal ? 'is-modal' : ''}`;
     if (!displayMap) return <div />;
 
     return (
       <div className={isModalClassName}>
         { isModal ? <div className="map-mask" /> : null }
-        <Map isModal={isModal} close={this.closeMap} />
+        <Map isModal={isModal} close={this.closeMap} listView={listView} />
       </div>
     );
   }
@@ -36,7 +37,7 @@ export default class MapPlaceholder extends React.Component {
   }
 
   render() {
-    const { defaultAddress, defaultName } = window.config;
+    const { defaultAddress, defaultName, listView } = window.config;
     const { displayMap, isModal } = this.state;
 
     const modalLayout = (

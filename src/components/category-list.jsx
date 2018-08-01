@@ -85,7 +85,7 @@ export default class CategoryList extends Component {
     this.setState({ mode });
   }
 
-  render() {
+  asListView() {
     const placeTypesList = this.getPlaceTypes();
     const placesList = this.getPlaces();
     const categoryHeader = this.getCategoryHeader();
@@ -101,6 +101,44 @@ export default class CategoryList extends Component {
           { placeTypesList }
         </VelocityTransitionGroup>
 
+      </div>
+    );
+  }
+
+  dropDownChange(e) {
+    const newPlaceType = e.currentTarget.options[e.currentTarget.selectedIndex].text;
+    this.changePlace(newPlaceType);
+  }
+
+  asDropDown() {
+    const { placeTypes } = this.props;
+
+    return (
+      <div className="category-list-drop-down">
+        <select
+          className="gp-search-places-dropdown"
+          onChange={e => this.dropDownChange(e)}
+        >
+          {
+            placeTypes.map(type => (
+              <option value={type}>{type}</option>
+            ))
+          }
+        </select>
+      </div>
+    );
+  }
+
+  render() {
+    const { listView } = this.props;
+    const listViewLayout = this.asListView();
+    const dropDownLayout = this.asDropDown();
+
+    const content = listView ? listViewLayout : dropDownLayout;
+
+    return (
+      <div>
+        { content }
       </div>
     );
   }
@@ -147,4 +185,5 @@ CategoryList.propTypes = {
     types: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,
   }).isRequired).isRequired,
   setInfoWindowFromPlace: PropTypes.func.isRequired,
+  listView: PropTypes.bool.isRequired,
 };
