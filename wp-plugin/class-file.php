@@ -59,12 +59,22 @@ class GPLocalSearch {
 
   public function setupMapConfig() {
     $this->options = get_option( 'my_option_name' );
+    $lat = 'false';
+    $lng = 'false';
+
+    if (isset($this->options['longitude'])) {
+      $lng = $this->options['longitude'] !== '' ? $this->options['longitude'] : 'false';
+    }
+
+    if (isset($this->options['latitude'])) {
+      $lat = $this->options['latitude'] !== '' ? $this->options['latitude'] : 'false';
+    }
 
     $script = '
        <script>
          window.config = {
-           lng: ' . $this->options['longitude']  . ',
-           lat: ' . $this->options['latitude']  . ',
+           lng: ' . $lng  . ',
+           lat: ' . $lat  . ',
            defaultName: "' . $this->options['name'] . '",
            defaultAddress: "' .$this->options['location'] . '",
            defaultTypes: "' .$this->options['categories'] . '".split(\',\'),
