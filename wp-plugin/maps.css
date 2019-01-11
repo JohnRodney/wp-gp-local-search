@@ -1,8 +1,4 @@
-*{
-  margin: 0;
-  padding: 0;
-}
-html, body, #react-target, #react-target > div{
+#react-target, #react-target > div{
   width: 100%;
   height: 100%;
 }
